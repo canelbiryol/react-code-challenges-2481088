@@ -4,9 +4,28 @@ export default function FormValidator () {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [passwordConfirm, setPasswordConfirm] = useState('')
+  const [message, setMessage] = useState('')
+
+  const findErrors = () => {
+    const errors = []
+
+    if(!email || !password || !passwordConfirm) errors.push('All fields must be filled in')
+    if([...email].filter(i => i === '@').length !== 1) errors.push('Email should be valid')
+    if([...password].length < 8) errors.push('Password should be 8 or more characters')
+    if(password !== passwordConfirm) errors.push('Passwords do not match')
+
+    return errors
+  }
+
+  const handleSubmit = e => {
+    e.preventDefault()
+
+    const errors = findErrors()
+    setMessage(errors.length ? errors.join(', ') : 'User Created')
+  }
 
   return (
-    <form>
+    <form onSubmit={handleSubmit}>
       <h2>Sign Up!</h2>
       <label htmlFor='email'>Email</label>
       <input
@@ -24,6 +43,7 @@ export default function FormValidator () {
         onChange={e => setPasswordConfirm(e.target.value)}
       />
       <input type='submit' value='Submit' />
+      {message}
     </form>
   )
 }
